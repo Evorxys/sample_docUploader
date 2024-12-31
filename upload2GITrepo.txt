@@ -1,0 +1,8 @@
+git init
+git add .
+git commit -m "Initial commit"
+git remote add origin https://github.com/Evorxys/DTS_DENR.git
+git branch -M main
+# Remove .env file to avoid pushing secrets
+git rm --cached .env
+git push -u origin main
