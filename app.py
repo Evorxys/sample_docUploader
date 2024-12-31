@@ -1,6 +1,5 @@
 from flask import Flask, request, jsonify, render_template, redirect, session, url_for
 import os
-import io
 from google.oauth2.credentials import Credentials
 from google_auth_oauthlib.flow import Flow
 from googleapiclient.discovery import build
@@ -33,7 +32,8 @@ def index():
 @app.route('/authorize')
 def authorize():
     flow = Flow.from_client_secrets_file(CLIENT_SECRETS_FILE, scopes=SCOPES)
-    flow.redirect_uri = url_for('oauth2callback', _external=True)
+    # Explicitly set the redirect URI
+    flow.redirect_uri = 'https://sample-docuploader.onrender.com/oauth2callback'
     authorization_url, state = flow.authorization_url(include_granted_scopes='true')
     session['state'] = state
     return redirect(authorization_url)
@@ -43,7 +43,8 @@ def authorize():
 def oauth2callback():
     state = session['state']
     flow = Flow.from_client_secrets_file(CLIENT_SECRETS_FILE, scopes=SCOPES, state=state)
-    flow.redirect_uri = url_for('oauth2callback', _external=True)
+    # Explicitly set the redirect URI
+    flow.redirect_uri = 'https://sample-docuploader.onrender.com/oauth2callback'
     authorization_response = request.url
     flow.fetch_token(authorization_response=authorization_response)
 
@@ -88,4 +89,3 @@ def upload():
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000, debug=True)
-
